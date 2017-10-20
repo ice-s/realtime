@@ -1,0 +1,11 @@
+{
+  "name": "ices.realtime",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "~4.15.2",
+    "redis": "^2.7.1",
+    "async": "^1.5.2",
+    "socket.io": "^1.7.3"
+  }
+}
