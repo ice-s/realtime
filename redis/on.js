@@ -2,7 +2,7 @@
  * Created by SonNT on 10/23/2017.
  */
 
-module.exports = function (redis, socket) {
+module.exports = function (redis, io) {
     /*listen : data send to channel*/
     redis.subscriber.on("message", function (channel, message) {
         console.log("channel : " + channel);

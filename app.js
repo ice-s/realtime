@@ -11,7 +11,7 @@ var io = socket_io.listen(server);
 /*connect redis*/
 var redis = require('./redis/redis');
 
-var on_redis = require("./redis/on")(io, redis);
+var on_redis = require("./redis/on")(redis, io);
 var on_socket = require("./socket/on")(io, redis);
 
 //run server http
