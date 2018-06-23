@@ -1,7 +1,3 @@
-/**
- * Created by SonNT on 10/20/2017.
- */
-
 var express = require("express");
 
 //get router
