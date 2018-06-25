@@ -3,24 +3,12 @@
  */
 
 module.exports = function(io, redis){
+    
     /*socket io listen client connect*/
     io.on("connection", function(socket) {
-        console.log("connected");
-        console.log(socket.id);
-
-        /*listen something event*/
-        socket.on("something", function(clientData){
-            console.log(clientData);
-        });
-
-        /*listen something event with callback*/
-        socket.on("something_cb", function(clientData, fn_callback){
-            console.log(clientData);
-        });
-
         /*subcriber channel*/
-        socket.on("subcriber", function(channelData){
-            console.log("[subcriber]");
+        socket.on("subscribe", function(channelData){
+            console.log("**********[subscribe]**********");
             // ["channel 1", "channel 2", "channel 3"]
             listChannel = null;
             if(typeof channelData === "string"){
@@ -28,32 +16,37 @@ module.exports = function(io, redis){
                     listChannel = JSON.parse(channelData);
                 } catch (e) {}
             }
+            
             if(typeof channelData === "object"){
                 listChannel = channelData;
             }
+
             if(Array.isArray(listChannel) === false){
                 if(channelData){
                     listChannel = [channelData];
                 }
             }
+            
             if(listChannel){
                 listChannel.forEach(function(channel){
                     redis.subscriber.subscribe(channel);
                 });
             }
+            console.log("**********[subscribe end]**********");
         });
 
         socket.on("send", function(clientData){
-            console.log("[send]");
             obj = null;
             if(typeof clientData === "string"){
                 try {
                     obj = JSON.parse(clientData);
                 } catch (e) {}
             }
+
             if(typeof clientData === "object"){
                 obj = clientData;
             }
+
             if(obj){
                 channel  = clientData.channel;
                 data  = clientData.data;
@@ -68,5 +61,19 @@ module.exports = function(io, redis){
         });
     });
 
+    /* listen : subcriber channel */
+    redis.subscriber.on("subscribe", function (channelName, count) {
+        console.log('dang ky channel : "' + channelName + '"');
+        console.log('all channel : ' + count);
 
+        /*TODO : io send message to channel: new connection*/
+    });
+
+    /*listen : data send to channel*/
+    redis.subscriber.on("message", function (channelName, message) {
+        console.log("channel : " + channelName);
+        console.log("message : " + message);
+        io.of('/').emit(channelName, message);
+        /*TODO : io send message to channel*/
+    });
 };

@@ -1,17 +1,25 @@
+/*load config*/
+var config = require("./config/config");
+
+/*express*/
 var express = require("express");
 var app = express();
 var server = require("http").Server(app);
+
+/*socket io*/
 var socket_io = require("socket.io");
-var config = require("./config/config");
+
+/*Load router*/
 var appRouter = require('./router/http');
 app.use('/', appRouter);
 
-/*init socket io*/
+/*create socket io*/
 var io = socket_io.listen(server);
-/*connect redis*/
-var redis = require('./redis/redis');
 
-var on_redis = require("./redis/on")(redis, io);
+/*create redis connection: */
+var redis = require('./redis/redisConnection');
+
+/* on Event */
 var on_socket = require("./socket/on")(io, redis);
 
 //run server http
